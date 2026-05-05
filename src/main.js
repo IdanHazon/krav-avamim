@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-const TARGET_SCORE = 1000;
-const TARGET_HITS = 50;
+const TARGET_SCORE = 700;
+const TARGET_HITS = 35;
 const ARENA_SIZE = 52;
 const PLAYER_SPEED = 5.4;
 const PLAYER_ACCEL = 38;
@@ -812,8 +812,8 @@ function startGame() {
 function resetGame() {
   state.score = 0;
   state.hits = 0;
-  state.lives = 7;
-  state.invincibleFor = 3;
+  state.lives = 9;
+  state.invincibleFor = 3.5;
   state.lastShotAt = 0;
   state.fireHeld = false;
   document.body.classList.remove("firing");
@@ -1420,8 +1420,8 @@ function enemyShoot(enemy, lead = true) {
   let aimAt = playerPos;
   if (lead) {
     const toPlayer = playerPos.clone().sub(origin);
-    const t = Math.min(1.4, toPlayer.length() / speed);
-    const leadAccuracy = role === "sniper" ? 0.95 : 0.7;
+    const t = Math.min(1.2, toPlayer.length() / speed);
+    const leadAccuracy = role === "sniper" ? 0.7 : 0.45;
     aimAt = playerPos.clone().addScaledVector(state.velocity, t * leadAccuracy);
   }
 
@@ -1677,7 +1677,7 @@ function maintainEnemies() {
   if (state.mode !== "playing") return;
   const now = performance.now();
   const progress = state.hits / TARGET_HITS;
-  const limit = ENEMY_LIMIT + (progress > 0.5 ? 2 : 0) + (progress > 0.8 ? 2 : 0);
+  const limit = 7 + (progress > 0.6 ? 1 : 0) + (progress > 0.85 ? 1 : 0);
   if (world.enemies.length >= limit || now < world.nextSpawnAt) return;
 
   const lane = world.lanes[Math.floor(Math.random() * world.lanes.length)];
@@ -1685,9 +1685,9 @@ function maintainEnemies() {
   const z = lane[1] + (Math.random() - 0.5) * 3;
   world.enemies.push(createUfo(x, z));
 
-  const baseDelay = 520;
-  const minDelay = 240;
-  const delay = Math.max(minDelay, baseDelay - progress * 380);
+  const baseDelay = 700;
+  const minDelay = 420;
+  const delay = Math.max(minDelay, baseDelay - progress * 280);
   world.nextSpawnAt = now + delay;
 }
 
