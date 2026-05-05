@@ -217,6 +217,40 @@ button:disabled {
   transform: translate(-50%, 0) scale(1);
 }
 
+.floating-text {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11;
+  overflow: hidden;
+}
+
+.float-num {
+  position: absolute;
+  font-weight: 950;
+  font-size: clamp(1.1rem, 2.6vw, 1.8rem);
+  color: #fffaf0;
+  text-shadow:
+    0 0 8px rgba(255, 212, 92, 0.85),
+    0 0 16px rgba(255, 212, 92, 0.55);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: float-up 900ms cubic-bezier(0.18, 0.7, 0.3, 1) forwards;
+}
+
+.float-num.combo {
+  color: #ff66bd;
+  text-shadow:
+    0 0 8px rgba(255, 102, 189, 0.95),
+    0 0 18px rgba(255, 102, 189, 0.65);
+}
+
+@keyframes float-up {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.6); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -120%) scale(1); }
+}
+
 .objective-pill {
   position: fixed;
   z-index: 7;
@@ -747,6 +781,24 @@ body.playing .fire-button,
 body.playing .action-button,
 body.playing .toast {
   backdrop-filter: none;
+}
+
+body.phone .mission-card,
+body.phone .stats-card,
+body.phone .toast,
+body.phone .joystick,
+body.phone .fire-button,
+body.phone .action-button,
+body.phone .intro-panel,
+body.phone .choice-panel,
+body.phone .secondary-button,
+body.phone .ghost-restart {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.phone #app::before {
+  display: none;
 }
 
 .joystick,

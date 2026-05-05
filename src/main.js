@@ -19,6 +19,21 @@ const SHIELD_COOLDOWN = 18;
 const SHIELD_DURATION = 3.5;
 const ENEMY_LIMIT = 10;
 const PLAYER_START = new THREE.Vector3(0, 0, 14);
+
+const isPhone = Math.min(window.innerWidth, window.innerHeight) < 720
+  || /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+if (isPhone) document.body.classList.add("phone");
+
+const QUALITY = {
+  pixelRatioCap: isPhone ? 1.0 : 1.4,
+  starsMultiplier: isPhone ? 0.45 : 1,
+  asteroidCount: isPhone ? 6 : 14,
+  nebulaCount: isPhone ? 4 : 10,
+  burstParticles: isPhone ? 0.55 : 1,
+  maxParticles: isPhone ? 90 : 220,
+  sphereSegmentsLow: isPhone ? 16 : 24,
+  sphereSegmentsHi: isPhone ? 22 : 32,
+};
 const SEGEL_DATA = {
   "א": {
     names: ["עידן", "דביר", "איה", "מיכאל", "עלמה", "עדי", "אורי", "שאבון"],
@@ -88,6 +103,7 @@ const ui = {
   hearts: document.querySelector("#hearts"),
   progress: document.querySelector("#progress-bar"),
   toast: document.querySelector("#toast"),
+  floatingText: document.querySelector("#floating-text"),
   startScreen: document.querySelector("#start-screen"),
   choiceScreen: document.querySelector("#choice-screen"),
   endScreen: document.querySelector("#end-screen"),
@@ -195,8 +211,7 @@ function buildRenderer() {
     alpha: false,
     powerPreference: "high-performance",
   });
-  const isPhone = Math.min(window.innerWidth, window.innerHeight) < 720;
-  world.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isPhone ? 1.1 : 1.35));
+  world.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, QUALITY.pixelRatioCap));
   world.renderer.setSize(window.innerWidth, window.innerHeight);
   world.renderer.shadowMap.enabled = false;
 }
@@ -214,8 +229,9 @@ function buildScene() {
   world.scene.add(fill);
 
   const floorTexture = makeFloorTexture();
+  const arenaSegments = isPhone ? 56 : 96;
   const floor = new THREE.Mesh(
-    new THREE.CircleGeometry(ARENA_SIZE * 0.85, 96),
+    new THREE.CircleGeometry(ARENA_SIZE * 0.85, arenaSegments),
     new THREE.MeshStandardMaterial({
       map: floorTexture,
       color: 0x1a2049,
@@ -229,7 +245,7 @@ function buildScene() {
   world.scene.add(floor);
 
   const arenaInner = new THREE.Mesh(
-    new THREE.RingGeometry(ARENA_SIZE * 0.83, ARENA_SIZE * 0.86, 96),
+    new THREE.RingGeometry(ARENA_SIZE * 0.83, ARENA_SIZE * 0.86, arenaSegments),
     new THREE.MeshBasicMaterial({ color: 0x6bf0ff, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
   );
   arenaInner.rotation.x = -Math.PI / 2;
@@ -237,7 +253,7 @@ function buildScene() {
   world.scene.add(arenaInner);
 
   const arenaGlow = new THREE.Mesh(
-    new THREE.RingGeometry(ARENA_SIZE * 0.86, ARENA_SIZE * 0.94, 96),
+    new THREE.RingGeometry(ARENA_SIZE * 0.86, ARENA_SIZE * 0.94, arenaSegments),
     new THREE.MeshBasicMaterial({ color: 0x9b88ff, transparent: true, opacity: 0.22, side: THREE.DoubleSide })
   );
   arenaGlow.rotation.x = -Math.PI / 2;
@@ -291,12 +307,12 @@ function buildScene() {
 }
 
 function addStars() {
-  const isPhone = Math.min(window.innerWidth, window.innerHeight) < 720;
+  const m = QUALITY.starsMultiplier;
   const layers = [
-    { count: isPhone ? 260 : 520, color: 0xfff8e8, size: 0.11, spread: 130 },
-    { count: isPhone ? 140 : 280, color: 0x9ed8ff, size: 0.07, spread: 150 },
-    { count: isPhone ? 80 : 160, color: 0xffd9a8, size: 0.13, spread: 110 },
-    { count: isPhone ? 50 : 100, color: 0xff9ec7, size: 0.09, spread: 160 },
+    { count: Math.round(520 * m), color: 0xfff8e8, size: 0.11, spread: 130 },
+    { count: Math.round(280 * m), color: 0x9ed8ff, size: 0.07, spread: 150 },
+    { count: Math.round(160 * m), color: 0xffd9a8, size: 0.13, spread: 110 },
+    { count: Math.round(100 * m), color: 0xff9ec7, size: 0.09, spread: 160 },
   ];
   for (const layer of layers) {
     const geometry = new THREE.BufferGeometry();
@@ -326,8 +342,7 @@ function addStars() {
 function addNebula() {
   const cloudTexture = makeCloudTexture();
   const palette = [0xff66bd, 0x5de7ff, 0x9f8cff, 0x80ffb3];
-  const isPhone = Math.min(window.innerWidth, window.innerHeight) < 720;
-  const count = isPhone ? 6 : 10;
+  const count = QUALITY.nebulaCount;
   for (let i = 0; i < count; i += 1) {
     const sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
@@ -424,8 +439,7 @@ function makeCloudTexture() {
 }
 
 function addAsteroids() {
-  const isPhone = Math.min(window.innerWidth, window.innerHeight) < 720;
-  const count = isPhone ? 8 : 14;
+  const count = QUALITY.asteroidCount;
   const material = new THREE.MeshStandardMaterial({
     color: 0x484e6e,
     roughness: 0.9,
@@ -1126,6 +1140,8 @@ function updateShield(dt) {
   if (world.shieldMesh) {
     if (state.shieldUntil <= 0) {
       world.scene.remove(world.shieldMesh);
+      assets.materials.alienSkin.emissive.setHex(0x000000);
+      assets.materials.alienSkin.emissiveIntensity = 0;
       return;
     }
     world.shieldMesh.position.copy(world.player.position).add(new THREE.Vector3(0, 1.0, 0));
@@ -1134,10 +1150,16 @@ function updateShield(dt) {
     world.shieldMesh.scale.setScalar(pulse);
     world.shieldMesh.material.opacity = 0.32 + Math.sin(t * 1.6) * 0.08;
     world.shieldMesh.rotation.y += dt * 0.6;
+    assets.materials.alienSkin.emissive.setHex(0x2acf5d);
+    assets.materials.alienSkin.emissiveIntensity = 0.4 + Math.sin(t * 2) * 0.15;
   }
 }
 
-function updateActionUI() {
+let _lastActionUI = 0;
+function updateActionUI(force) {
+  const now = performance.now();
+  if (!force && now - _lastActionUI < 100) return;
+  _lastActionUI = now;
   if (ui.grenadeCd) {
     const ratio = state.grenadeCooldown / GRENADE_COOLDOWN;
     ui.grenadeCd.style.setProperty("--cd", `${ratio * 360}deg`);
@@ -1410,13 +1432,18 @@ function createShot(owner) {
   return shot;
 }
 
+const _shotPrev = new THREE.Vector3();
+const _shotDir = new THREE.Vector3();
+const _unitY = new THREE.Vector3(0, 1, 0);
+const _playerCenter = new THREE.Vector3();
 function updateShots(shots, dt, owner) {
   for (let i = shots.length - 1; i >= 0; i -= 1) {
     const shot = shots[i];
-    const prev = shot.position.clone();
+    _shotPrev.copy(shot.position);
     shot.position.addScaledVector(shot.userData.velocity, dt);
     shot.userData.life -= dt;
-    shot.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), shot.userData.velocity.clone().normalize());
+    _shotDir.copy(shot.userData.velocity).normalize();
+    shot.quaternion.setFromUnitVectors(_unitY, _shotDir);
 
     if (owner === "player") {
       shot.userData.trailIn -= dt;
@@ -1431,14 +1458,15 @@ function updateShots(shots, dt, owner) {
       continue;
     }
 
-    if (owner === "player" && damageEnemyAlongSegment(prev, shot.position, shot.userData.radius)) {
+    if (owner === "player" && damageEnemyAlongSegment(_shotPrev, shot.position, shot.userData.radius)) {
       removeAt(shots, i);
       continue;
     }
 
     if (owner === "enemy" && state.invincibleFor <= 0) {
-      const playerCenter = world.player.position.clone().add(new THREE.Vector3(0, 1.1, 0));
-      if (segmentSphereDistance(prev, shot.position, playerCenter) < 0.95) {
+      _playerCenter.copy(world.player.position);
+      _playerCenter.y += 1.1;
+      if (segmentSphereDistance(_shotPrev, shot.position, _playerCenter) < 0.95) {
         removeAt(shots, i);
         damagePlayer();
       }
@@ -1446,13 +1474,17 @@ function updateShots(shots, dt, owner) {
   }
 }
 
+const _abTmp = new THREE.Vector3();
+const _apTmp = new THREE.Vector3();
+const _closestTmp = new THREE.Vector3();
 function segmentSphereDistance(a, b, p) {
-  const ab = b.clone().sub(a);
-  const lenSq = ab.lengthSq();
+  _abTmp.subVectors(b, a);
+  const lenSq = _abTmp.lengthSq();
   if (lenSq < 1e-6) return p.distanceTo(a);
-  const t = Math.max(0, Math.min(1, p.clone().sub(a).dot(ab) / lenSq));
-  const closest = a.clone().addScaledVector(ab, t);
-  return closest.distanceTo(p);
+  _apTmp.subVectors(p, a);
+  const t = Math.max(0, Math.min(1, _apTmp.dot(_abTmp) / lenSq));
+  _closestTmp.copy(a).addScaledVector(_abTmp, t);
+  return _closestTmp.distanceTo(p);
 }
 
 function damageEnemyAlongSegment(a, b, shotRadius) {
@@ -1486,11 +1518,31 @@ function registerEnemyHit(index, enemy) {
   state.hits += 1;
   state.score = Math.min(TARGET_SCORE, Math.round((state.hits / TARGET_HITS) * TARGET_SCORE));
   updateHud();
-  showToast(state.combo > 2 ? `קומבו x${state.combo}!` : randomHitText());
+
+  const baseHitPoints = Math.round(TARGET_SCORE / TARGET_HITS);
+  const comboMult = state.combo >= 3 ? state.combo : 1;
+  spawnFloatingText(`+${baseHitPoints * comboMult}`, enemy.position.clone().add(new THREE.Vector3(0, 1.6, 0)), state.combo >= 3);
+  if (state.combo === 3) showToast("קומבו x3!");
+  else if (state.combo > 3 && state.combo % 2 === 0) showToast(`קומבו x${state.combo}!`);
 
   if (state.hits >= TARGET_HITS) {
     winGame();
   }
+}
+
+function spawnFloatingText(text, worldPos, isCombo) {
+  if (!ui.floatingText || !world.camera) return;
+  const projected = worldPos.clone().project(world.camera);
+  if (projected.z < -1 || projected.z > 1) return;
+  const x = (projected.x * 0.5 + 0.5) * window.innerWidth;
+  const y = (-projected.y * 0.5 + 0.5) * window.innerHeight;
+  const el = document.createElement("span");
+  el.className = isCombo ? "float-num combo" : "float-num";
+  el.textContent = text;
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  ui.floatingText.append(el);
+  window.setTimeout(() => el.remove(), 950);
 }
 
 function updateDyingUfos(dt) {
@@ -1630,7 +1682,9 @@ function burst(position, color, count) {
     : color === 0xfff3a8 ? assets.materials.flashFx
     : color === 0x6ff3ff ? assets.materials.playerShot
     : assets.materials.hitFx;
-  for (let i = 0; i < count; i += 1) {
+  const scaled = Math.max(1, Math.round(count * QUALITY.burstParticles));
+  for (let i = 0; i < scaled; i += 1) {
+    pruneParticles();
     const particle = getParticle(assets.geometries.particle, material);
     const size = 0.6 + Math.random() * 0.7;
     particle.scale.setScalar(size);
@@ -1644,6 +1698,12 @@ function burst(position, color, count) {
     particle.userData.life = particle.userData.maxLife;
     world.particles.push(particle);
     world.scene.add(particle);
+  }
+}
+
+function pruneParticles() {
+  while (world.particles.length >= QUALITY.maxParticles) {
+    recycleParticleAt(0);
   }
 }
 
