@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-const TARGET_SCORE = 500;
-const TARGET_HITS = 25;
+const TARGET_SCORE = 1000;
+const TARGET_HITS = 50;
 const ARENA_SIZE = 52;
 const PLAYER_SPEED = 5.4;
 const PLAYER_ACCEL = 38;
@@ -812,7 +812,7 @@ function startGame() {
 function resetGame() {
   state.score = 0;
   state.hits = 0;
-  state.lives = 5;
+  state.lives = 7;
   state.invincibleFor = 3;
   state.lastShotAt = 0;
   state.fireHeld = false;
@@ -1676,13 +1676,19 @@ function resetEndScreen() {
 function maintainEnemies() {
   if (state.mode !== "playing") return;
   const now = performance.now();
-  if (world.enemies.length >= ENEMY_LIMIT || now < world.nextSpawnAt) return;
+  const progress = state.hits / TARGET_HITS;
+  const limit = ENEMY_LIMIT + (progress > 0.5 ? 2 : 0) + (progress > 0.8 ? 2 : 0);
+  if (world.enemies.length >= limit || now < world.nextSpawnAt) return;
 
   const lane = world.lanes[Math.floor(Math.random() * world.lanes.length)];
   const x = lane[0] + (Math.random() - 0.5) * 3;
   const z = lane[1] + (Math.random() - 0.5) * 3;
   world.enemies.push(createUfo(x, z));
-  world.nextSpawnAt = now + 480;
+
+  const baseDelay = 520;
+  const minDelay = 240;
+  const delay = Math.max(minDelay, baseDelay - progress * 380);
+  world.nextSpawnAt = now + delay;
 }
 
 function spawnWave() {
