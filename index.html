@@ -2,7 +2,11 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="theme-color" content="#16224a" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E👽%3C/text%3E%3C/svg%3E" />
     <title>קרב עב״אמים</title>
@@ -122,14 +126,16 @@
           <div id="stick" class="stick"></div>
         </div>
         <div class="action-stack">
-          <button id="shield-button" class="action-button shield-button" type="button" aria-label="מגן">
-            <span class="action-glyph">🛡</span>
-            <span id="shield-cd" class="cd-ring"></span>
-          </button>
-          <button id="grenade-button" class="action-button grenade-button" type="button" aria-label="רימון">
-            <span class="action-glyph">💣</span>
-            <span id="grenade-cd" class="cd-ring"></span>
-          </button>
+          <div class="secondary-actions">
+            <button id="shield-button" class="action-button shield-button" type="button" aria-label="מגן">
+              <span class="action-glyph">🛡</span>
+              <span id="shield-cd" class="cd-ring"></span>
+            </button>
+            <button id="grenade-button" class="action-button grenade-button" type="button" aria-label="רימון">
+              <span class="action-glyph">💣</span>
+              <span id="grenade-cd" class="cd-ring"></span>
+            </button>
+          </div>
           <button id="fire-button" class="fire-button" type="button" aria-label="ירי לייזר">
             <span>ירי</span>
           </button>

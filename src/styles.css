@@ -32,9 +32,36 @@ body,
   background: var(--bg);
   color: var(--ink);
   touch-action: none;
+  -ms-touch-action: none;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
   font-family:
     Heebo, "Segoe UI", Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+button,
+.joystick,
+.fire-button,
+.action-button,
+.wheel-core,
+.choice-card,
+.ghost-restart,
+.primary-button,
+.secondary-button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  outline: none;
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
 }
 
 button {
@@ -820,12 +847,13 @@ body.phone #app::before {
 
 .joystick {
   position: fixed;
-  left: calc(env(safe-area-inset-left, 0px) + 14px);
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-  width: clamp(110px, 26vw, 160px);
+  left: calc(env(safe-area-inset-left, 0px) + 12px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  width: clamp(96px, 22vw, 140px);
   aspect-ratio: 1;
   border-radius: 50%;
   touch-action: none;
+  flex-shrink: 0;
 }
 
 .stick {
@@ -849,24 +877,33 @@ body.phone #app::before {
 
 .action-stack {
   position: fixed;
-  right: calc(env(safe-area-inset-right, 0px) + 14px);
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-  display: grid;
+  right: calc(env(safe-area-inset-right, 0px) + 12px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  display: flex;
+  align-items: flex-end;
   gap: 10px;
-  justify-items: center;
+  pointer-events: none;
+}
+
+.action-stack .secondary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
   pointer-events: none;
 }
 
 .fire-button {
   display: grid;
   place-items: center;
-  width: clamp(96px, 22vw, 140px);
+  width: clamp(86px, 18vw, 124px);
   aspect-ratio: 1;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.34), transparent 28%),
     conic-gradient(from 180deg, var(--pink), var(--sun), var(--aqua), var(--pink));
   touch-action: none;
+  flex-shrink: 0;
 }
 
 .fire-button span {
@@ -885,11 +922,12 @@ body.phone #app::before {
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(58px, 13vw, 80px);
+  width: clamp(48px, 11vw, 68px);
   aspect-ratio: 1;
   border-radius: 50%;
   font-size: 0;
   touch-action: none;
+  flex-shrink: 0;
   transition: transform 120ms ease, filter 200ms ease;
 }
 
