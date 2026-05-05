@@ -6,8 +6,7 @@
   "description": "קרב עב״אמים - 3D Hebrew browser game with rigged staff wheel",
   "scripts": {
     "dev": "node server.mjs",
-    "check": "node --check src/main.js && node --check server.mjs",
-    "start": "node server.mjs"
+    "check": "node --check src/main.js && node --check server.mjs"
   },
   "engines": {
     "node": ">=18"
