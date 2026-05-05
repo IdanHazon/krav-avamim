@@ -1170,7 +1170,7 @@ function updateShield(dt) {
   }
 }
 
-let _lastActionUI = 0;
+var _lastActionUI = 0;
 function updateActionUI(force) {
   const now = performance.now();
   if (!force && now - _lastActionUI < 100) return;
