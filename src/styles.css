@@ -335,51 +335,57 @@ body.playing .objective-pill {
 
 .choice-overlay.active {
   display: grid;
+  place-items: center;
 }
 
 .choice-panel {
   display: grid;
-  gap: 22px;
+  gap: clamp(10px, 2.4vh, 18px);
   text-align: center;
-  padding: clamp(20px, 4vw, 40px);
-  width: min(720px, 92vw);
+  padding: clamp(14px, 3vw, 28px);
+  width: min(440px, 88vw);
+  max-height: 90vh;
   animation: panel-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .choice-title {
   margin: 0;
-  font-size: clamp(1.8rem, 5.4vw, 3.2rem);
-  line-height: 1;
+  font-size: clamp(1.3rem, 4.4vw, 2.1rem);
+  line-height: 1.05;
   background: linear-gradient(120deg, #fff 0%, var(--aqua) 35%, var(--pink) 70%, var(--sun) 100%);
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: title-shimmer 6s ease-in-out infinite;
-  filter: drop-shadow(0 6px 16px rgba(93, 231, 255, 0.35));
+  filter: drop-shadow(0 4px 12px rgba(93, 231, 255, 0.3));
+}
+
+.choice-panel .eyebrow {
+  font-size: clamp(0.72rem, 2vw, 0.9rem);
 }
 
 .choice-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: clamp(8px, 2vw, 14px);
 }
 
 .choice-card {
   display: grid;
-  gap: 8px;
+  gap: 4px;
   place-items: center;
-  padding: clamp(20px, 4vw, 38px) 14px;
-  border-radius: 22px;
+  padding: clamp(14px, 3.2vw, 24px) 10px;
+  border-radius: 18px;
   border: 1.5px solid rgba(255, 255, 255, 0.22);
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 55%),
     rgba(15, 18, 42, 0.55);
   color: white;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow:
-    0 18px 48px rgba(3, 6, 18, 0.55),
+    0 14px 36px rgba(3, 6, 18, 0.5),
     inset 0 1px rgba(255, 255, 255, 0.18),
     0 0 0 0 rgba(93, 231, 255, 0);
   transition: transform 200ms ease, box-shadow 250ms ease, filter 200ms ease;
@@ -415,13 +421,13 @@ body.playing .objective-pill {
 
 .choice-card .choice-eyebrow {
   color: var(--aqua);
-  font-size: clamp(0.85rem, 2.4vw, 1.05rem);
+  font-size: clamp(0.7rem, 2vw, 0.95rem);
   font-weight: 900;
   letter-spacing: 0.06em;
 }
 
 .choice-card strong {
-  font-size: clamp(4rem, 13vw, 7rem);
+  font-size: clamp(2.6rem, 9vw, 4.6rem);
   line-height: 1;
   font-weight: 950;
   background: linear-gradient(135deg, var(--mint), var(--aqua), var(--purple));
@@ -473,7 +479,7 @@ body.playing .objective-pill {
 }
 
 .winner-reveal #winner-name {
-  font-size: clamp(7rem, 26vw, 20rem);
+  font-size: clamp(4.5rem, 22vmin, 16rem);
   font-weight: 950;
   line-height: 0.9;
   background: linear-gradient(120deg, #fff 0%, var(--sun) 30%, var(--pink) 60%, var(--aqua) 100%);
@@ -492,7 +498,7 @@ body.playing .objective-pill {
 
 .winner-message {
   margin: 0;
-  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  font-size: clamp(1rem, 3.4vmin, 2rem);
   font-weight: 900;
   color: #fffaf0;
   text-shadow:
@@ -983,7 +989,7 @@ body.phone #app::before {
 
 .wheel-stage {
   position: relative;
-  width: min(360px, 58vh, 82vw);
+  width: min(78vmin, 460px);
   aspect-ratio: 1;
   margin: 2px auto;
   animation: soft-pop 500ms ease both;
@@ -1036,11 +1042,12 @@ body.phone #app::before {
   width: 46%;
   transform-origin: right center;
   color: #10162f;
-  font-size: clamp(0.78rem, 2.2vw, 1rem);
+  font-size: clamp(0.7rem, 2.2vmin, 1.05rem);
   font-weight: 950;
   text-align: left;
   text-shadow: 0 1px rgba(255, 255, 255, 0.55);
   transition: color 300ms ease, text-shadow 300ms ease;
+  white-space: nowrap;
 }
 
 .wheel-name.is-winner {
@@ -1062,7 +1069,7 @@ body.phone #app::before {
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
   font-weight: 950;
-  font-size: clamp(1.05rem, 3.6vw, 1.6rem);
+  font-size: clamp(0.85rem, 3.4vmin, 1.4rem);
   line-height: 1.05;
   cursor: pointer;
   z-index: 3;
@@ -1097,9 +1104,9 @@ body.phone #app::before {
   position: absolute;
   z-index: 4;
   left: 50%;
-  top: -14px;
-  width: 30px;
-  height: 42px;
+  top: clamp(-18px, -3vmin, -10px);
+  width: clamp(22px, 5vmin, 34px);
+  height: clamp(30px, 7vmin, 46px);
   transform: translateX(-50%);
   clip-path: polygon(50% 100%, 0 0, 100% 0);
   background: linear-gradient(180deg, #ffd45c, #ff8d5c);
