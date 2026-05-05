@@ -105,6 +105,9 @@ const ui = {
   toast: document.querySelector("#toast"),
   floatingText: document.querySelector("#floating-text"),
   startScreen: document.querySelector("#start-screen"),
+  celebrationScreen: document.querySelector("#celebration-screen"),
+  partyAnimals: document.querySelector("#party-animals"),
+  partyConfetti: document.querySelector("#party-confetti"),
   choiceScreen: document.querySelector("#choice-screen"),
   endScreen: document.querySelector("#end-screen"),
   choiceA: document.querySelector("#choice-a"),
@@ -812,7 +815,7 @@ function startGame() {
 function resetGame() {
   state.score = 0;
   state.hits = 0;
-  state.lives = 9;
+  state.lives = 5;
   state.invincibleFor = 3.5;
   state.lastShotAt = 0;
   state.fireHeld = false;
@@ -888,6 +891,7 @@ function setMode(mode) {
   }
   document.body.classList.toggle("playing", mode === "playing");
   ui.startScreen.classList.toggle("active", mode === "start");
+  ui.celebrationScreen.classList.toggle("active", mode === "celebration");
   ui.choiceScreen.classList.toggle("active", mode === "choice");
   ui.endScreen.classList.toggle("active", mode === "won" || mode === "lost");
 }
@@ -1643,7 +1647,56 @@ function winGame() {
   state.activeSegel = null;
   resetEndScreen();
   resetJoystick();
-  setMode("choice");
+  showCelebration();
+}
+
+function showCelebration() {
+  setMode("celebration");
+  spawnPartyAnimals();
+  startPartyConfetti();
+  window.setTimeout(() => {
+    if (state.mode === "celebration") setMode("choice");
+  }, 4600);
+}
+
+function spawnPartyAnimals() {
+  const root = ui.partyAnimals;
+  if (!root) return;
+  root.innerHTML = "";
+  const cast = ["🐶", "🐱", "🦊", "🐻", "🐼", "🐵", "🦁", "🐯", "🐰", "🐸", "🦄", "🐨", "🐷", "🐹", "🥳", "🎉", "🎊", "🪩", "🕺", "💃", "🎵", "✨"];
+  const count = 22;
+  for (let i = 0; i < count; i += 1) {
+    const el = document.createElement("span");
+    el.className = "party-animal";
+    el.textContent = cast[i % cast.length];
+    el.style.left = `${6 + Math.random() * 88}%`;
+    el.style.top = `${8 + Math.random() * 80}%`;
+    el.style.fontSize = `clamp(2rem, ${4 + Math.random() * 6}vmin, 6rem)`;
+    el.style.animationDelay = `${Math.random() * 600}ms`;
+    el.style.animationDuration = `${1 + Math.random() * 1.4}s`;
+    el.style.setProperty("--swayX", `${(Math.random() - 0.5) * 60}px`);
+    el.style.setProperty("--rot", `${(Math.random() - 0.5) * 40}deg`);
+    root.append(el);
+  }
+}
+
+function startPartyConfetti() {
+  const root = ui.partyConfetti;
+  if (!root) return;
+  root.innerHTML = "";
+  const colors = ["#5de7ff", "#80ffb3", "#ffd45c", "#ff66bd", "#9f8cff", "#ff8d5c", "#ffffff"];
+  const total = 80;
+  for (let i = 0; i < total; i += 1) {
+    const piece = document.createElement("span");
+    piece.className = "party-piece";
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = `${Math.random() * 1500}ms`;
+    piece.style.animationDuration = `${1.6 + Math.random() * 1.6}s`;
+    piece.style.setProperty("--drift", `${(Math.random() - 0.5) * 240}px`);
+    piece.style.setProperty("--rot", `${(Math.random() - 0.5) * 1440}deg`);
+    root.append(piece);
+  }
 }
 
 function chooseSegel(key) {
