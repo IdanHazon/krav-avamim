@@ -108,6 +108,7 @@ const ui = {
   celebrationScreen: document.querySelector("#celebration-screen"),
   partyAnimals: document.querySelector("#party-animals"),
   partyConfetti: document.querySelector("#party-confetti"),
+  suspenseScreen: document.querySelector("#suspense-screen"),
   choiceScreen: document.querySelector("#choice-screen"),
   endScreen: document.querySelector("#end-screen"),
   choiceA: document.querySelector("#choice-a"),
@@ -892,6 +893,7 @@ function setMode(mode) {
   document.body.classList.toggle("playing", mode === "playing");
   ui.startScreen.classList.toggle("active", mode === "start");
   ui.celebrationScreen.classList.toggle("active", mode === "celebration");
+  ui.suspenseScreen.classList.toggle("active", mode === "suspense");
   ui.choiceScreen.classList.toggle("active", mode === "choice");
   ui.endScreen.classList.toggle("active", mode === "won" || mode === "lost");
 }
@@ -1655,8 +1657,15 @@ function showCelebration() {
   spawnPartyAnimals();
   startPartyConfetti();
   window.setTimeout(() => {
-    if (state.mode === "celebration") setMode("choice");
-  }, 4600);
+    if (state.mode === "celebration") showSuspense();
+  }, 6200);
+}
+
+function showSuspense() {
+  setMode("suspense");
+  window.setTimeout(() => {
+    if (state.mode === "suspense") setMode("choice");
+  }, 2400);
 }
 
 function spawnPartyAnimals() {
