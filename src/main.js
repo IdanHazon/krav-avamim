@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-const TARGET_SCORE = 700;
-const TARGET_HITS = 35;
+const TARGET_SCORE = 1000;
+const TARGET_HITS = 50;
 const ARENA_SIZE = 52;
 const PLAYER_SPEED = 5.4;
 const PLAYER_ACCEL = 38;
