@@ -105,6 +105,8 @@ const ui = {
   toast: document.querySelector("#toast"),
   floatingText: document.querySelector("#floating-text"),
   startScreen: document.querySelector("#start-screen"),
+  lostScreen: document.querySelector("#lost-screen"),
+  lostRetry: document.querySelector("#lost-retry"),
   celebrationScreen: document.querySelector("#celebration-screen"),
   partyAnimals: document.querySelector("#party-animals"),
   partyConfetti: document.querySelector("#party-confetti"),
@@ -718,6 +720,7 @@ function recycleUfo(ufo) {
 function bindEvents() {
   ui.startButton.addEventListener("click", () => startGame());
   ui.restartButton.addEventListener("click", () => startGame());
+  ui.lostRetry.addEventListener("click", () => startGame());
   ui.spinButton.addEventListener("click", spinWheel);
   ui.choiceA.addEventListener("click", () => chooseSegel("א"));
   ui.choiceB.addEventListener("click", () => chooseSegel("ב"));
@@ -895,7 +898,8 @@ function setMode(mode) {
   ui.celebrationScreen.classList.toggle("active", mode === "celebration");
   ui.suspenseScreen.classList.toggle("active", mode === "suspense");
   ui.choiceScreen.classList.toggle("active", mode === "choice");
-  ui.endScreen.classList.toggle("active", mode === "won" || mode === "lost");
+  ui.endScreen.classList.toggle("active", mode === "won");
+  ui.lostScreen.classList.toggle("active", mode === "lost");
 }
 
 function animate() {
@@ -1718,9 +1722,6 @@ function chooseSegel(key) {
 
 function loseGame() {
   setMode("lost");
-  resetEndScreen();
-  ui.spinButton.disabled = true;
-  ui.spinButton.textContent = "—";
   resetJoystick();
 }
 

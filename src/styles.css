@@ -413,6 +413,60 @@ body.playing .objective-pill {
   30% { opacity: 1; transform: translateY(-3px); }
 }
 
+.lost-overlay {
+  display: none;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 102, 189, 0.25), transparent 55%),
+    radial-gradient(circle at 50% 90%, rgba(255, 141, 92, 0.18), transparent 55%),
+    rgba(8, 10, 28, 0.94);
+}
+
+.lost-overlay.active {
+  display: grid;
+  place-items: center;
+}
+
+.lost-content {
+  display: grid;
+  gap: clamp(10px, 2.4vh, 18px);
+  text-align: center;
+  padding: 0 16px;
+  justify-items: center;
+  animation: panel-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.lost-title {
+  margin: 0;
+  font-size: clamp(3rem, 12vmin, 7rem);
+  line-height: 1;
+  font-weight: 950;
+  background: linear-gradient(120deg, #fff 0%, var(--pink) 35%, var(--orange) 70%, var(--sun) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(255, 102, 189, 0.55));
+  animation:
+    suspense-zoom 700ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    title-shimmer 4s ease-in-out infinite 700ms;
+}
+
+.lost-sub {
+  margin: 0;
+  font-size: clamp(1.1rem, 4vmin, 2rem);
+  font-weight: 900;
+  color: #fffaf0;
+  text-shadow: 0 0 14px rgba(255, 102, 189, 0.55);
+  opacity: 0;
+  animation: msg-fade 600ms ease 400ms forwards;
+}
+
+.lost-content .primary-button {
+  margin-top: 8px;
+  opacity: 0;
+  animation: msg-fade 500ms ease 800ms forwards;
+}
+
 .suspense-overlay {
   display: none;
   background:
